@@ -1,6 +1,126 @@
 // Smooth scroll behavior for the entire page
 document.documentElement.style.scrollBehavior = 'smooth';
 
+// Scroll Progress Indicator
+const scrollProgress = document.querySelector('.scroll-progress');
+window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    if (scrollProgress) {
+        scrollProgress.style.width = `${scrolled}%`;
+    }
+});
+
+// Dark Mode Toggle
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+
+// Check for saved theme preference or default to light mode
+const currentTheme = localStorage.getItem('theme') || 'light';
+body.classList.toggle('dark-mode', currentTheme === 'dark');
+updateThemeIcon();
+
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    updateThemeIcon();
+});
+
+function updateThemeIcon() {
+    const icon = themeToggle.querySelector('i');
+    if (body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    }
+}
+
+// Course Search Functionality
+const courseSearch = document.getElementById('courseSearch');
+const fieldLinks = document.querySelectorAll('.field-link');
+
+if (courseSearch) {
+    courseSearch.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        fieldLinks.forEach(link => {
+            const text = link.textContent.toLowerCase();
+            const parent = link.parentElement;
+            if (text.includes(searchTerm) || searchTerm === '') {
+                parent.style.display = '';
+                link.style.transform = 'scale(1)';
+            } else {
+                parent.style.display = 'none';
+            }
+        });
+    });
+}
+
+// Category Filter Functionality
+const categoryFilters = document.querySelectorAll('.category-filter');
+categoryFilters.forEach(filter => {
+    filter.addEventListener('click', () => {
+        // Remove active class from all filters
+        categoryFilters.forEach(f => f.classList.remove('active'));
+        // Add active class to clicked filter
+        filter.classList.add('active');
+        
+        const category = filter.dataset.category;
+        fieldLinks.forEach(link => {
+            if (category === 'all' || link.dataset.category === category) {
+                link.parentElement.style.display = '';
+                link.style.opacity = '1';
+                link.style.transform = 'translateX(0)';
+            } else {
+                link.parentElement.style.display = 'none';
+            }
+        });
+    });
+});
+
+// FAB Button Functionality
+const fabButton = document.getElementById('fabButton');
+if (fabButton) {
+    fabButton.addEventListener('click', () => {
+        const menu = document.createElement('div');
+        menu.className = 'fab-menu';
+        menu.innerHTML = `
+            <a href="#home"><i class="fas fa-home"></i> Home</a>
+            <a href="#courses"><i class="fas fa-book"></i> Courses</a>
+            <a href="#testimonials"><i class="fas fa-comments"></i> Reviews</a>
+            <a href="#blog"><i class="fas fa-blog"></i> Blog</a>
+        `;
+        menu.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        `;
+        
+        document.body.appendChild(menu);
+        
+        // Close menu when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', function closeMenu(e) {
+                if (!menu.contains(e.target) && e.target !== fabButton) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }, 100);
+    });
+}
+
 // Navbar scroll effect with enhanced transition
 const navbar = document.querySelector('.navbar');
 let lastScrollY = window.scrollY;
@@ -188,24 +308,31 @@ courseCards.forEach(card => {
     });
 });
 
-// Enhanced scroll animations
+// Enhanced scroll animations with stagger
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
 };
 
 const animateOnScroll = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-            if (entry.target.classList.contains('resource-card')) {
-                entry.target.style.transitionDelay = `${Math.random() * 0.3}s`;
-            }
+            entry.target.style.opacity = '0';
+            entry.target.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                entry.target.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }, index * 100);
+            
+            animateOnScroll.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-document.querySelectorAll('.feature-card, .course-card, .resource-card').forEach(el => {
+document.querySelectorAll('.feature-card, .course-card, .resource-card, .testimonial-card, .achievement-card, .blog-card').forEach(el => {
+    el.style.opacity = '0';
     animateOnScroll.observe(el);
 });
 
@@ -444,13 +571,14 @@ style.textContent = `
 
 document.head.appendChild(style);
 
-// Remove old filtering code and add new hover effects for filter buttons
+// Enhanced filter button animations
 document.querySelectorAll('.filter-btn').forEach(button => {
     button.addEventListener('mouseenter', () => {
         const icon = button.querySelector('i');
         if (icon) {
             icon.style.transform = 'scale(1.2) rotate(5deg)';
         }
+        button.style.transform = 'translateY(-3px) scale(1.05)';
     });
     
     button.addEventListener('mouseleave', () => {
@@ -458,8 +586,44 @@ document.querySelectorAll('.filter-btn').forEach(button => {
         if (icon) {
             icon.style.transform = 'scale(1) rotate(0)';
         }
+        button.style.transform = 'translateY(0) scale(1)';
     });
 });
+
+// Animate statistics numbers
+const animateNumbers = () => {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const target = parseInt(stat.textContent.replace(/[^0-9]/g, ''));
+        const duration = 2000;
+        const increment = target / (duration / 16);
+        let current = 0;
+        
+        const updateNumber = () => {
+            current += increment;
+            if (current < target) {
+                stat.textContent = Math.floor(current) + stat.textContent.replace(/[0-9]/g, '').replace(/\+/, '');
+                requestAnimationFrame(updateNumber);
+            } else {
+                stat.textContent = stat.textContent.replace(/[0-9]+/, target);
+            }
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateNumber();
+                    observer.unobserve(stat);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(stat);
+    });
+};
+
+// Initialize number animations when page loads
+window.addEventListener('load', animateNumbers);
 
 // Add click tracking for filter buttons
 document.querySelectorAll('.filter-btn').forEach(button => {
@@ -952,4 +1116,119 @@ document.querySelectorAll('.resource-card img').forEach(img => {
     
     img.style.opacity = '0';
     img.style.transition = 'opacity 0.3s ease-in';
-}); 
+});
+
+// Enhanced CTA button effects with ripple
+document.querySelectorAll('.cta-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        `;
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Add CSS for ripple animation
+if (!document.querySelector('#ripple-style')) {
+    const style = document.createElement('style');
+    style.id = 'ripple-style';
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Smooth reveal animations for sections
+const revealOnScroll = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+});
+
+// Observe all sections
+document.querySelectorAll('section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    section.style.transition = 'all 0.8s ease-out';
+    revealOnScroll.observe(section);
+});
+
+// Enhanced testimonials carousel effect (optional autoplay)
+let testimonialIndex = 0;
+const testimonialCards = document.querySelectorAll('.testimonial-card');
+if (testimonialCards.length > 0) {
+    setInterval(() => {
+        testimonialCards.forEach((card, index) => {
+            if (index === testimonialIndex) {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+                card.style.transition = 'all 0.4s ease';
+            } else {
+                card.style.transform = 'translateY(0) scale(1)';
+            }
+        });
+        testimonialIndex = (testimonialIndex + 1) % testimonialCards.length;
+    }, 3000);
+}
+
+// Add parallax effect to hero section
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.hero');
+    if (hero && scrolled < window.innerHeight) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+    }
+});
+
+// Optional: Add typing effect to hero subtitle (commented out to prevent text clearing)
+// Uncomment if you want this feature
+/*
+const heroSubtitle = document.querySelector('.hero p');
+if (heroSubtitle && !heroSubtitle.dataset.typed) {
+    heroSubtitle.dataset.typed = 'true';
+    const text = heroSubtitle.textContent;
+    heroSubtitle.textContent = '';
+    let index = 0;
+    
+    const typeText = () => {
+        if (index < text.length) {
+            heroSubtitle.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeText, 30);
+        }
+    };
+    
+    // Start typing after a delay
+    setTimeout(typeText, 1000);
+}
+*/ 

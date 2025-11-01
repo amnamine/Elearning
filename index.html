@@ -9,22 +9,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+    
     <nav class="navbar">
         <div class="logo">EduLearn</div>
         <ul class="nav-links">
-            <li><a href="https://www.coursera.org" target="_blank">Coursera</a></li>
-            <li><a href="https://www.udemy.com" target="_blank">Udemy</a></li>
-            <li><a href="https://www.edx.org" target="_blank">edX</a></li>
-            <li><a href="https://www.pluralsight.com" target="_blank">Pluralsight</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#courses">Courses</a></li>
+            <li><a href="#resources">Resources</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#blog">Blog</a></li>
         </ul>
-        <button class="login-btn">Login</button>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="#courses" class="cta-nav-btn">Start Learning</a>
+        </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero" id="home">
         <div class="hero-content">
             <h1>Transform Your Future with Online Learning</h1>
-            <p>Access world-class education from anywhere, anytime. Join thousands of learners worldwide.</p>
-            <button class="cta-btn">Get Started</button>
+            <p>Access world-class education from anywhere, anytime. Join thousands of learners worldwide in mastering new skills and advancing your career.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                <button class="cta-btn">Start Learning Free</button>
+                <button class="cta-btn" style="background: transparent; border: 2px solid white; color: white;">
+                    <i class="fas fa-play-circle"></i> Watch Demo
+                </button>
+            </div>
         </div>
     </header>
 
@@ -49,26 +64,38 @@
         </div>
     </section>
 
-    <section class="field-explorer">
+    <section class="field-explorer" id="courses">
         <div class="container">
             <h2>Explore by Field</h2>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" id="courseSearch" placeholder="Search courses, topics, or skills...">
+            </div>
+            <div class="category-filters">
+                <button class="category-filter active" data-category="all">All Topics</button>
+                <button class="category-filter" data-category="web">Web Development</button>
+                <button class="category-filter" data-category="ai">AI & ML</button>
+                <button class="category-filter" data-category="mobile">Mobile Dev</button>
+                <button class="category-filter" data-category="data">Data Science</button>
+                <button class="category-filter" data-category="security">Cybersecurity</button>
+            </div>
             <div class="resource-links">
-                <a href="https://www.cybrary.it" target="_blank" class="field-link">
+                <a href="https://www.cybrary.it" target="_blank" class="field-link" data-category="security">
                     <i class="fas fa-shield-alt"></i>
                     Cybersecurity Resources
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="https://www.kaggle.com" target="_blank" class="field-link">
+                <a href="https://www.kaggle.com" target="_blank" class="field-link" data-category="ai">
                     <i class="fas fa-brain"></i>
                     AI & Machine Learning
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="https://developer.android.com" target="_blank" class="field-link">
+                <a href="https://developer.android.com" target="_blank" class="field-link" data-category="mobile">
                     <i class="fas fa-mobile-alt"></i>
                     Mobile Development
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="https://www.datacamp.com" target="_blank" class="field-link">
+                <a href="https://www.datacamp.com" target="_blank" class="field-link" data-category="data">
                     <i class="fas fa-database"></i>
                     Data Science
                     <i class="fas fa-arrow-right"></i>
@@ -224,7 +251,7 @@
         </div>
     </section>
 
-    <section class="learning-resources">
+    <section class="learning-resources" id="resources">
         <h2>Essential Learning Resources</h2>
         <div class="resources-grid">
             <div class="resource-card">
@@ -349,6 +376,145 @@
         </div>
     </section>
 
+    <section class="testimonials" id="testimonials">
+        <h2>What Our Students Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-content">This platform completely transformed my career. The courses are comprehensive, and the instructors are world-class. I landed my dream job within 6 months!</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">SM</div>
+                    <div class="testimonial-info">
+                        <h4>Sarah Martinez</h4>
+                        <p>Software Engineer at Google</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-content">The hands-on projects and real-world applications helped me build a portfolio that impressed employers. Best investment in my education!</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">JK</div>
+                    <div class="testimonial-info">
+                        <h4>James Kim</h4>
+                        <p>Data Scientist at Microsoft</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-content">The community support and interactive learning environment kept me motivated throughout my journey. Highly recommend to anyone serious about learning!</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">AR</div>
+                    <div class="testimonial-info">
+                        <h4>Alex Rodriguez</h4>
+                        <p>Full Stack Developer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="achievements">
+        <h2>Unlock Your Achievements</h2>
+        <div class="achievements-grid">
+            <div class="achievement-card">
+                <i class="fas fa-trophy achievement-icon"></i>
+                <h3>Course Completion</h3>
+                <p>Complete courses and earn certificates to showcase your skills to employers</p>
+            </div>
+            <div class="achievement-card">
+                <i class="fas fa-fire achievement-icon"></i>
+                <h3>Learning Streak</h3>
+                <p>Maintain daily learning streaks to build consistent study habits</p>
+            </div>
+            <div class="achievement-card">
+                <i class="fas fa-medal achievement-icon"></i>
+                <h3>Skill Mastery</h3>
+                <p>Master specific skills and unlock advanced learning paths</p>
+            </div>
+            <div class="achievement-card">
+                <i class="fas fa-users achievement-icon"></i>
+                <h3>Community Helper</h3>
+                <p>Help fellow learners in the community and earn recognition badges</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog" id="blog">
+        <h2>Latest from Our Blog</h2>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-image"></div>
+                <div class="blog-content">
+                    <div class="blog-date">March 15, 2024</div>
+                    <h3>10 Essential Skills for Web Developers in 2024</h3>
+                    <p>Discover the most in-demand skills that will make you stand out in the competitive web development market this year.</p>
+                    <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="blog-card">
+                <div class="blog-image"></div>
+                <div class="blog-content">
+                    <div class="blog-date">March 10, 2024</div>
+                    <h3>How to Build a Career in Data Science: A Complete Guide</h3>
+                    <p>Learn the step-by-step path to becoming a successful data scientist, from learning the basics to landing your first job.</p>
+                    <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="blog-card">
+                <div class="blog-image"></div>
+                <div class="blog-content">
+                    <div class="blog-date">March 5, 2024</div>
+                    <h3>AI Tools Every Developer Should Know</h3>
+                    <p>Explore the latest AI-powered tools that can supercharge your development workflow and boost productivity.</p>
+                    <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="download-app">
+        <div class="download-content">
+            <h2>Learn On The Go</h2>
+            <p>Download our mobile app and continue learning wherever you are. Access all courses, track your progress, and learn offline.</p>
+            <div class="download-buttons">
+                <a href="#" class="download-btn">
+                    <i class="fab fa-apple"></i>
+                    <div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Download on the</div>
+                        <div style="font-size: 1.1rem;">App Store</div>
+                    </div>
+                </a>
+                <a href="#" class="download-btn">
+                    <i class="fab fa-google-play"></i>
+                    <div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Get it on</div>
+                        <div style="font-size: 1.1rem;">Google Play</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <section class="statistics">
         <div class="stats-container">
             <div class="stat-item">
@@ -417,6 +583,10 @@
             <p>&copy; 2024 EduLearn. All rights reserved.</p>
         </div>
     </footer>
+
+    <button class="fab-button" id="fabButton" title="Quick Actions">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <script src="script.js"></script>
 </body>
