@@ -28,14 +28,24 @@ themeToggle.addEventListener('click', () => {
 });
 
 function updateThemeIcon() {
+    if (!themeToggle) return;
     const icon = themeToggle.querySelector('i');
+    if (!icon) return;
+    
     if (body.classList.contains('dark-mode')) {
         icon.classList.remove('fa-moon');
         icon.classList.add('fa-sun');
+        themeToggle.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
     } else {
         icon.classList.remove('fa-sun');
         icon.classList.add('fa-moon');
+        themeToggle.style.background = 'linear-gradient(135deg, var(--gradient-1), var(--gradient-2))';
     }
+}
+
+// Initialize theme on page load
+if (themeToggle) {
+    updateThemeIcon();
 }
 
 // Course Search Functionality
@@ -169,103 +179,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Login modal functionality
-const loginBtn = document.querySelector('.login-btn');
-loginBtn.addEventListener('click', () => {
-    const modal = document.createElement('div');
-    modal.className = 'login-modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Login</h2>
-            <form class="login-form">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-                <p>Don't have an account? <a href="#">Sign up</a></p>
-            </form>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    // Add modal styles
-    const modalStyle = document.createElement('style');
-    modalStyle.textContent = `
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+// CTA Navigation Button - Smooth scroll to courses
+document.querySelectorAll('.cta-nav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector('#courses');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            max-width: 400px;
-            width: 90%;
-        }
-        .close-modal {
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .login-form input {
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-        }
-        .login-form button {
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            color: white;
-            padding: 0.8rem;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.2s ease;
-        }
-        .login-form button:hover {
-            transform: translateY(-2px);
-        }
-    `;
-    document.head.appendChild(modalStyle);
-    
-    // Animate modal entrance
-    requestAnimationFrame(() => {
-        modal.style.opacity = '1';
-        modal.querySelector('.modal-content').style.transform = 'translateY(0)';
-    });
-    
-    // Close modal functionality
-    const closeModal = () => {
-        modal.style.opacity = '0';
-        modal.querySelector('.modal-content').style.transform = 'translateY(20px)';
-        setTimeout(() => modal.remove(), 300);
-    };
-    
-    modal.querySelector('.close-modal').addEventListener('click', closeModal);
-    modal.addEventListener('click', e => {
-        if (e.target === modal) closeModal();
     });
 });
 
@@ -1210,25 +1131,194 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Optional: Add typing effect to hero subtitle (commented out to prevent text clearing)
-// Uncomment if you want this feature
-/*
-const heroSubtitle = document.querySelector('.hero p');
-if (heroSubtitle && !heroSubtitle.dataset.typed) {
-    heroSubtitle.dataset.typed = 'true';
-    const text = heroSubtitle.textContent;
-    heroSubtitle.textContent = '';
-    let index = 0;
-    
-    const typeText = () => {
-        if (index < text.length) {
-            heroSubtitle.textContent += text.charAt(index);
-            index++;
-            setTimeout(typeText, 30);
+// FAQ Toggle Functionality
+document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', () => {
+        const faqItem = question.closest('.faq-item');
+        const isActive = faqItem.classList.contains('active');
+        
+        // Close all FAQ items
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Open clicked item if it wasn't active
+        if (!isActive) {
+            faqItem.classList.add('active');
         }
-    };
+    });
+});
+
+// Enhanced animations for pricing cards
+document.querySelectorAll('.pricing-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-10px) scale(1.02)';
+    });
     
-    // Start typing after a delay
-    setTimeout(typeText, 1000);
-}
-*/ 
+    card.addEventListener('mouseleave', () => {
+        if (!card.classList.contains('featured')) {
+            card.style.transform = 'translateY(0) scale(1)';
+        } else {
+            card.style.transform = 'scale(1.05)';
+        }
+    });
+});
+
+// Floating animation for instructor badges
+const instructorBadges = document.querySelectorAll('.instructor-badge');
+instructorBadges.forEach((badge, index) => {
+    badge.style.animationDelay = `${index * 0.2}s`;
+});
+
+// Animated gradient backgrounds for course thumbnails
+document.querySelectorAll('.course-thumbnail').forEach((thumbnail, index) => {
+    let hue = (index * 60) % 360;
+    const animateGradient = () => {
+        hue = (hue + 1) % 360;
+        const color1 = `hsl(${hue}, 70%, 60%)`;
+        const color2 = `hsl(${(hue + 60) % 360}, 70%, 60%)`;
+        thumbnail.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+        requestAnimationFrame(animateGradient);
+    };
+    // Slow down animation
+    let lastTime = 0;
+    const slowAnimate = (currentTime) => {
+        if (currentTime - lastTime > 50) {
+            animateGradient();
+            lastTime = currentTime;
+        }
+        requestAnimationFrame(slowAnimate);
+    };
+    requestAnimationFrame(slowAnimate);
+});
+
+// Enhanced hover effects for featured course cards
+document.querySelectorAll('.featured-course-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+    });
+});
+
+// Parallax scroll for sections
+const parallaxSections = document.querySelectorAll('.pricing, .instructors, .featured-courses');
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    
+    parallaxSections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const speed = 0.3;
+            const yPos = -(rect.top * speed);
+            section.style.transform = `translateY(${yPos}px)`;
+        }
+    });
+});
+
+// Stagger animation for instructor cards
+const instructorCards = document.querySelectorAll('.instructor-card');
+instructorCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    
+    setTimeout(() => {
+        card.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, index * 150);
+});
+
+// Enhanced ripple effect for all buttons
+document.querySelectorAll('.enroll-btn-featured, .pricing-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.6);
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        `;
+        
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Create floating particles in hero section
+const createParticles = () => {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 15}s`;
+        particle.style.animationDuration = `${10 + Math.random() * 10}s`;
+        particle.style.width = `${3 + Math.random() * 3}px`;
+        particle.style.height = particle.style.width;
+        hero.appendChild(particle);
+    }
+};
+
+// Initialize particles when page loads
+window.addEventListener('load', createParticles);
+
+// Smooth scroll for pricing buttons
+document.querySelectorAll('.pricing-btn, .enroll-btn-featured').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const coursesSection = document.querySelector('#courses');
+        if (coursesSection) {
+            coursesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Add entrance animation for pricing cards
+const pricingCards = document.querySelectorAll('.pricing-card');
+const pricingObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }, index * 100);
+            pricingObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+pricingCards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(50px)';
+    card.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    pricingObserver.observe(card);
+}); 
