@@ -11,43 +11,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Dark Mode Toggle
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
-
-// Check for saved theme preference or default to light mode
-const currentTheme = localStorage.getItem('theme') || 'light';
-body.classList.toggle('dark-mode', currentTheme === 'dark');
-updateThemeIcon();
-
-themeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-    localStorage.setItem('theme', theme);
-    updateThemeIcon();
-});
-
-function updateThemeIcon() {
-    if (!themeToggle) return;
-    const icon = themeToggle.querySelector('i');
-    if (!icon) return;
-    
-    if (body.classList.contains('dark-mode')) {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-        themeToggle.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
-    } else {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-        themeToggle.style.background = 'linear-gradient(135deg, var(--gradient-1), var(--gradient-2))';
-    }
-}
-
-// Initialize theme on page load
-if (themeToggle) {
-    updateThemeIcon();
-}
-
 // Course Search Functionality
 const courseSearch = document.getElementById('courseSearch');
 const fieldLinks = document.querySelectorAll('.field-link');
@@ -68,27 +31,61 @@ if (courseSearch) {
     });
 }
 
-// Category Filter Functionality
+// Category Filter Functionality - FIXED
 const categoryFilters = document.querySelectorAll('.category-filter');
-categoryFilters.forEach(filter => {
-    filter.addEventListener('click', () => {
-        // Remove active class from all filters
-        categoryFilters.forEach(f => f.classList.remove('active'));
-        // Add active class to clicked filter
-        filter.classList.add('active');
-        
-        const category = filter.dataset.category;
-        fieldLinks.forEach(link => {
-            if (category === 'all' || link.dataset.category === category) {
-                link.parentElement.style.display = '';
-                link.style.opacity = '1';
-                link.style.transform = 'translateX(0)';
-            } else {
-                link.parentElement.style.display = 'none';
-            }
+const allFieldLinks = document.querySelectorAll('.field-link');
+const resourceLinksContainer = document.querySelector('.resource-links');
+
+if (categoryFilters.length > 0 && allFieldLinks.length > 0) {
+    categoryFilters.forEach(filter => {
+        filter.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remove active class from all filters
+            categoryFilters.forEach(f => {
+                f.classList.remove('active');
+                f.style.transform = 'scale(1)';
+            });
+            
+            // Add active class to clicked filter with animation
+            filter.classList.add('active');
+            filter.style.transform = 'scale(1.05)';
+            
+            const category = filter.getAttribute('data-category');
+            
+            // Animate and filter links
+            const resourceLinksContainer = document.querySelector('.resource-links');
+            
+            allFieldLinks.forEach((link, index) => {
+                const linkCategory = link.getAttribute('data-category');
+                
+                if (category === 'all' || linkCategory === category) {
+                    // Show with animation
+                    link.style.display = 'inline-flex';
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateX(-30px) scale(0.9)';
+                    link.style.pointerEvents = 'none';
+                    
+                    setTimeout(() => {
+                        link.style.transition = 'all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        link.style.opacity = '1';
+                        link.style.transform = 'translateX(0) scale(1)';
+                        link.style.pointerEvents = 'auto';
+                    }, index * 80);
+                } else {
+                    // Hide with animation
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateX(30px) scale(0.9)';
+                    link.style.transition = 'all 0.3s ease';
+                    link.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        link.style.display = 'none';
+                    }, 300);
+                }
+            });
         });
     });
-});
+}
 
 // FAB Button Functionality
 const fabButton = document.getElementById('fabButton');
@@ -1170,27 +1167,8 @@ instructorBadges.forEach((badge, index) => {
     badge.style.animationDelay = `${index * 0.2}s`;
 });
 
-// Animated gradient backgrounds for course thumbnails
-document.querySelectorAll('.course-thumbnail').forEach((thumbnail, index) => {
-    let hue = (index * 60) % 360;
-    const animateGradient = () => {
-        hue = (hue + 1) % 360;
-        const color1 = `hsl(${hue}, 70%, 60%)`;
-        const color2 = `hsl(${(hue + 60) % 360}, 70%, 60%)`;
-        thumbnail.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-        requestAnimationFrame(animateGradient);
-    };
-    // Slow down animation
-    let lastTime = 0;
-    const slowAnimate = (currentTime) => {
-        if (currentTime - lastTime > 50) {
-            animateGradient();
-            lastTime = currentTime;
-        }
-        requestAnimationFrame(slowAnimate);
-    };
-    requestAnimationFrame(slowAnimate);
-});
+// Remove the animated gradient override for course thumbnails - use CSS gradients instead
+// This ensures the category-specific colors are maintained
 
 // Enhanced hover effects for featured course cards
 document.querySelectorAll('.featured-course-card').forEach(card => {
